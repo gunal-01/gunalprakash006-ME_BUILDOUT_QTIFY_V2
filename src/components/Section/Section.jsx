@@ -19,8 +19,12 @@ function Section({ title, data, filterSource, type }) {
             if (filterSource) {
                 try {
                     const response = await filterSource();
-                    const { data: newFilters } = response;
-                    setFilters(prevFilters => [...prevFilters, ...newFilters]);
+                    if (response && response.data) {
+                        const newFilters = response.data.filters || [];
+                        setFilters(prevFilters => [...prevFilters, ...newFilters]);
+                    } else {
+                        console.error("Invalid response structure:", response);
+                    }
                 } catch (error) {
                     console.error("Failed to fetch filters:", error);
                 }
